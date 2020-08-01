@@ -71,16 +71,21 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if msg := m.Content; strings.HasPrefix(msg, Prefix) {
-		fmt.Println(msg)
-		fmt.Println(strings.Split(msg[len(Prefix):], " "))
 		switch commands := strings.Split(msg[len(Prefix):], " "); {
 		// Show documentation on lobby command
 		case commands[0] == "lobby" && commands[1] == "help":
-			s.ChannelMessageSend(m.ChannelID, "Help!")
+			s.ChannelMessageSend(m.ChannelID, "If you give me 10 players, I will randomly generate two teams!")
+		// Error when number of players is not 10
+		case commands[0] == "lobby" && len(commands[1:]) != 10:
+			s.ChannelMessageSend(m.ChannelID, "WE NEED MOAR PLAYERS!!! <:unamused_peli:731992316364980286>")
 		// Randomizes a lobby of 10, 11 or 12 people
-		case commands[0] == "lobby":
+		case commands[0] == "lobby" && len(commands[1:]) == 10:
 			players := shuffle_array(commands[1:])
-			s.ChannelMessageSend(m.ChannelID, strings.Join(players, "\n"))
+			s.ChannelMessageSend(m.ChannelID, build_lobby(players))
+
+		// Shows documentation on toss command
+		case commands[0] == "toss":
+			s.ChannelMessageSend(m.ChannelID, coin_toss())
 		}
 	}
 }
@@ -91,4 +96,23 @@ func shuffle_array(a []string) []string {
 		a[i], a[j] = a[j], a[i]
 	})
 	return a
+}
+
+func build_lobby(players []string) string {
+	return "**The Radiant**\n" +
+		"```\n" + strings.Join(players[:5], "\n") + "\n```" +
+		"\n**The Dire**\n" +
+		"```\n" + strings.Join(players[5:], "\n") + "\n```"
+}
+
+func coin_toss() string {
+	coin := []string{
+		"heads",
+		"tails",
+	}
+
+	rand.Seed(time.Now().UnixNano())
+
+	// flip the coin
+	return coin[rand.Intn(len(coin))]
 }
