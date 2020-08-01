@@ -10,12 +10,25 @@ The available commands are:
 
 ## Examples
 
+1. Randomize a lobby for 10 players
 ```
--lobbyrandomizer a b c d e f g h i j
+-lobbyrandomizer Sumail Dendi Arteezy N0tail Puppey Miracle s4 Ceb fy XBOCT
+
 The Radiant | The Dire
-    e           a
-    d           c
-    i           f
-    j           g
-    b           h
+XBOCT       | N0tail
+Arteezy     | Dendi
+Sumail      | Puppey
+fy          | Miracle
+Ceb         | s4
+```
+
+2. Toss a coin
+```
+-toss
+
+heads
+
+-toss
+
+tails
 ```
