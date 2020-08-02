@@ -134,14 +134,12 @@ func build_lobby(players []string, add_roles bool) string {
 		dire_players = players[len(players)/2:]
 	} else {
 		leftover := rand.Intn(2)
-		fmt.Println(leftover)
 		radiant_players = players[:len(players)/2+leftover]
 		dire_players = players[len(players)/2+leftover:]
 	}
 
 	if add_roles {
 		for player := 0; player < len(radiant_players); player++ {
-			fmt.Println(player, radiant_players[player])
 			radiant_players[player] = roles[player] + " - " + radiant_players[player]
 		}
 		for player := 0; player < len(dire_players); player++ {
