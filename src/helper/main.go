@@ -103,7 +103,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		case commands[0] == "lobby" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
 			s.ChannelMessageSend(m.ChannelID, build_lobby(shuffle_array(commands[1:]), false))
 		// Randomizes a lobby with roles of 10, 11 or 12 people
-		case commands[0] == "lobby" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
+		case commands[0] == "lobby_roles" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
 			s.ChannelMessageSend(m.ChannelID, build_lobby(shuffle_array(commands[1:]), true))
 		}
 	}
@@ -117,13 +117,14 @@ func shuffle_array(a []string) []string {
 }
 
 func build_lobby(players []string, add_roles bool) string {
-	// roles := []string{
-	// 	"Offlaner",
-	// 	"Hard support",
-	// 	"Soft support",
-	// 	"Safe lane",
-	// 	"Mid lane",
-	// }
+	roles := []string{
+		"Offlaner",
+		"Hard support",
+		"Soft support",
+		"Safe lane",
+		"Mid lane",
+		"Coach",
+	}
 
 	var radiant_players []string
 	var dire_players []string
@@ -139,15 +140,18 @@ func build_lobby(players []string, add_roles bool) string {
 	}
 
 	if add_roles {
-		return ""
-	} else {
-		return build_lobby_msg(radiant_players, dire_players)
+		for player := 0; player < len(radiant_players); player++ {
+			fmt.Println(player, radiant_players[player])
+			radiant_players[player] = roles[player] + " - " + radiant_players[player]
+		}
+		for player := 0; player < len(dire_players); player++ {
+			dire_players[player] = roles[player] + " - " + dire_players[player]
+		}
 	}
+	return build_lobby_msg(radiant_players, dire_players)
 }
 
 func build_lobby_msg(radiant_players []string, dire_players []string) string {
-	// players[:5]
-	// players[5:]
 	return "**The Radiant**\n" +
 		"```\n" + strings.Join(radiant_players, "\n") + "\n```" +
 		"\n**The Dire**\n" +
