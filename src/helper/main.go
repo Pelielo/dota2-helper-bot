@@ -90,20 +90,20 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// Show documentation on lobby command
 		case commands[0] == "lobby" && len(commands) == 1:
 			s.ChannelMessageSend(m.ChannelID, "Usage: `-lobby player1 player2 player3 ...`")
-		// Show documentation on lobby_roles command
-		case commands[0] == "lobby_roles" && len(commands) == 1:
-			s.ChannelMessageSend(m.ChannelID, "Usage: `-lobby_roles player1 player2 player3 ...`")
+		// Show documentation on lobby-roles command
+		case commands[0] == "lobby-roles" && len(commands) == 1:
+			s.ChannelMessageSend(m.ChannelID, "Usage: `-lobby-roles player1 player2 player3 ...`")
 		// Error when number of players is not 10
-		case (commands[0] == "lobby" || commands[0] == "lobby_roles") && len(commands[1:]) < 10:
+		case (commands[0] == "lobby" || commands[0] == "lobby-roles") && len(commands[1:]) < 10:
 			s.ChannelMessageSend(m.ChannelID, "WE NEED MOAR PLAYERS!!! <:unamused_peli:731992316364980286>")
 		// Error when number of players is not 10
-		case (commands[0] == "lobby" || commands[0] == "lobby_roles") && len(commands[1:]) > 12:
+		case (commands[0] == "lobby" || commands[0] == "lobby-roles") && len(commands[1:]) > 12:
 			s.ChannelMessageSend(m.ChannelID, "WE NEED LESS PLAYERS!!!")
 		// Randomizes a lobby of 10, 11 or 12 people
 		case commands[0] == "lobby" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
 			s.ChannelMessageSend(m.ChannelID, build_lobby(shuffle_array(commands[1:]), false))
 		// Randomizes a lobby with roles of 10, 11 or 12 people
-		case commands[0] == "lobby_roles" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
+		case commands[0] == "lobby-roles" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
 			s.ChannelMessageSend(m.ChannelID, build_lobby(shuffle_array(commands[1:]), true))
 		}
 	}
@@ -118,7 +118,7 @@ func shuffle_array(a []string) []string {
 
 func build_lobby(players []string, add_roles bool) string {
 	roles := []string{
-		"Offlaner",
+		"Off lane",
 		"Hard support",
 		"Soft support",
 		"Safe lane",
@@ -167,10 +167,10 @@ func coin_toss() string {
 
 func show_commands() string {
 	commands := []string{
-		"`-toss`: Tosses a coin and outputs heads of tails.",
+		"`-toss`: Tosses a coin and outputs heads or tails.",
 		"`-roll`: Randomly chooses a value between two numbers. Defaults to 0-100.",
-		"`-lobby`: Creates a lobby with randomly chosen players.",
-		"`-lobby_roles`: Creates a lobby with randomly chosen players and assigns each of them a role.",
+		"`-lobby`: Creates a lobby with 10-12 randomly chosen players.",
+		"`-lobby-roles`: Creates a lobby with 10-12 randomly chosen players and assigns each of them a role.",
 	}
 	return strings.Join(commands, "\n")
 }
