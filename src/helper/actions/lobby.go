@@ -3,9 +3,11 @@ package actions
 import (
 	"math/rand"
 	"strings"
+
+	"github.com/bwmarrin/discordgo"
 )
 
-func BuildLobby(players []string, add_roles bool) string {
+func BuildLobby(players []string, add_roles bool) *discordgo.MessageEmbed {
 	randomPlayers := shuffleArray(players)
 	roles := []string{
 		"Off lane",
@@ -46,9 +48,27 @@ func shuffleArray(a []string) []string {
 	return a
 }
 
-func buildLobbyMsg(radiantPlayers []string, direPlayers []string) string {
-	return "**The Radiant**\n" +
-		"```\n" + strings.Join(radiantPlayers, "\n") + "\n```" +
-		"\n**The Dire**\n" +
-		"```\n" + strings.Join(direPlayers, "\n") + "\n```"
+func buildLobbyMsg(radiantPlayers []string, direPlayers []string) *discordgo.MessageEmbed {
+
+	// description := "**The Radiant**\n" +
+	// 	"```\n" + strings.Join(radiantPlayers, "\n") + "\n```" +
+	// 	"\n**The Dire**\n" +
+	// 	"```\n" + strings.Join(direPlayers, "\n") + "\n```"
+
+	return &discordgo.MessageEmbed{
+		Title: "Lobby results",
+		Color: 0xbf2121, // red
+		Fields: []*discordgo.MessageEmbedField{
+			&discordgo.MessageEmbedField{
+				Name:   "The Radiant",
+				Value:  "```\n" + strings.Join(radiantPlayers, "\n") + "\n```",
+				Inline: true,
+			},
+			&discordgo.MessageEmbedField{
+				Name:   "The Dire",
+				Value:  "```\n" + strings.Join(direPlayers, "\n") + "\n```",
+				Inline: true,
+			},
+		},
+	}
 }

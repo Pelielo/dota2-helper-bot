@@ -10,7 +10,7 @@ func HandleMessage(s *discordgo.Session, m *discordgo.MessageCreate, commands []
 
 	// Show documentation on all commands
 	case commands[0] == "help":
-		s.ChannelMessageSend(m.ChannelID, actions.ShowCommands())
+		s.ChannelMessageSendEmbed(m.ChannelID, actions.ShowCommands())
 
 	// Tosses a coin
 	case commands[0] == "toss":
@@ -34,9 +34,9 @@ func HandleMessage(s *discordgo.Session, m *discordgo.MessageCreate, commands []
 		s.ChannelMessageSend(m.ChannelID, "WE NEED LESS PLAYERS!!! <:sad_carol:731977792471957554>")
 	// Randomizes a lobby of 10, 11 or 12 people
 	case commands[0] == "lobby" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
-		s.ChannelMessageSend(m.ChannelID, actions.BuildLobby(commands[1:], false))
+		s.ChannelMessageSendEmbed(m.ChannelID, actions.BuildLobby(commands[1:], false))
 	// Randomizes a lobby with roles of 10, 11 or 12 people
 	case commands[0] == "lobby-roles" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
-		s.ChannelMessageSend(m.ChannelID, actions.BuildLobby(commands[1:], true))
+		s.ChannelMessageSendEmbed(m.ChannelID, actions.BuildLobby(commands[1:], true))
 
 }
