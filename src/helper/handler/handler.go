@@ -38,5 +38,5 @@ func HandleMessage(s *discordgo.Session, m *discordgo.MessageCreate, commands []
 	// Randomizes a lobby with roles of 10, 11 or 12 people
 	case commands[0] == "lobby-roles" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
 		s.ChannelMessageSendEmbed(m.ChannelID, actions.BuildLobby(commands[1:], true))
-
+	}
 }
