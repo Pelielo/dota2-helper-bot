@@ -6,12 +6,12 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
-	"strconv"
 	"strings"
 	"syscall"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/pelielo/dota2-helper-bot/src/helper/handler"
 )
 
 // Variables used for command line parameters
@@ -74,107 +74,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if msg := m.Content; strings.HasPrefix(msg, Prefix) {
-		switch commands := strings.Split(msg[len(Prefix):], " "); {
-		// Show documentation on all commands
-		case commands[0] == "help":
-			s.ChannelMessageSend(m.ChannelID, show_commands())
-
-		// Tosses a coin
-		case commands[0] == "toss":
-			s.ChannelMessageSend(m.ChannelID, coin_toss())
-
-		// Rolls a number. Defaults to 0-100
-		case commands[0] == "roll":
-			s.ChannelMessageSend(m.ChannelID, roll_number())
-
-		// Show documentation on lobby command
-		case commands[0] == "lobby" && len(commands) == 1:
-			s.ChannelMessageSend(m.ChannelID, "Usage: `-lobby player1 player2 player3 ...`")
-		// Show documentation on lobby-roles command
-		case commands[0] == "lobby-roles" && len(commands) == 1:
-			s.ChannelMessageSend(m.ChannelID, "Usage: `-lobby-roles player1 player2 player3 ...`")
-		// Error when number of players is not 10
-		case (commands[0] == "lobby" || commands[0] == "lobby-roles") && len(commands[1:]) < 10:
-			s.ChannelMessageSend(m.ChannelID, "WE NEED MOAR PLAYERS!!! <:unamused_peli:731992316364980286>")
-		// Error when number of players is not 10
-		case (commands[0] == "lobby" || commands[0] == "lobby-roles") && len(commands[1:]) > 12:
-			s.ChannelMessageSend(m.ChannelID, "WE NEED LESS PLAYERS!!!")
-		// Randomizes a lobby of 10, 11 or 12 people
-		case commands[0] == "lobby" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
-			s.ChannelMessageSend(m.ChannelID, build_lobby(shuffle_array(commands[1:]), false))
-		// Randomizes a lobby with roles of 10, 11 or 12 people
-		case commands[0] == "lobby-roles" && len(commands[1:]) >= 10 && len(commands[1:]) <= 12:
-			s.ChannelMessageSend(m.ChannelID, build_lobby(shuffle_array(commands[1:]), true))
-		}
+		handler.HandleMessage(s, m, strings.Split(msg[len(Prefix):], " "))
 	}
-}
-
-func shuffle_array(a []string) []string {
-	rand.Shuffle(len(a), func(i, j int) {
-		a[i], a[j] = a[j], a[i]
-	})
-	return a
-}
-
-func build_lobby(players []string, add_roles bool) string {
-	roles := []string{
-		"Off lane",
-		"Hard support",
-		"Soft support",
-		"Safe lane",
-		"Mid lane",
-		"Coach",
-	}
-
-	var radiant_players []string
-	var dire_players []string
-
-	if len(players)%2 == 0 {
-		radiant_players = players[:len(players)/2]
-		dire_players = players[len(players)/2:]
-	} else {
-		leftover := rand.Intn(2)
-		radiant_players = players[:len(players)/2+leftover]
-		dire_players = players[len(players)/2+leftover:]
-	}
-
-	if add_roles {
-		for player := 0; player < len(radiant_players); player++ {
-			radiant_players[player] = roles[player] + " - " + radiant_players[player]
-		}
-		for player := 0; player < len(dire_players); player++ {
-			dire_players[player] = roles[player] + " - " + dire_players[player]
-		}
-	}
-	return build_lobby_msg(radiant_players, dire_players)
-}
-
-func build_lobby_msg(radiant_players []string, dire_players []string) string {
-	return "**The Radiant**\n" +
-		"```\n" + strings.Join(radiant_players, "\n") + "\n```" +
-		"\n**The Dire**\n" +
-		"```\n" + strings.Join(dire_players, "\n") + "\n```"
-}
-
-func coin_toss() string {
-	coin := []string{
-		"heads",
-		"tails",
-	}
-
-	return coin[rand.Intn(len(coin))]
-}
-
-func show_commands() string {
-	commands := []string{
-		"`-toss`: Tosses a coin and outputs heads or tails.",
-		"`-roll`: Randomly chooses a value between two numbers. Defaults to 0-100.",
-		"`-lobby`: Creates a lobby with 10-12 randomly chosen players.",
-		"`-lobby-roles`: Creates a lobby with 10-12 randomly chosen players and assigns each of them a role.",
-	}
-	return strings.Join(commands, "\n")
-}
-
-func roll_number() string {
-	return strconv.Itoa(rand.Intn(101))
 }
